@@ -1,10 +1,13 @@
 import unittest
-from SearchAlgorithm import (
-    __author__, expand, calculate_cost, calculate_heuristics, remove_cycles, depth_first_search,
-    breadth_first_search, uniform_cost_search, remove_redundant_paths, distance_to_stations, Astar, Astar_improved)
-from SubwayMap import Path
-from utils import print_list_of_path_with_cost, read_station_information, read_cost_table, read_information
+
 import os
+
+from SearchAlgorithm import calculate_cost, __author__, expand, remove_cycles, depth_first_search, \
+    breadth_first_search, uniform_cost_search, calculate_heuristics, remove_redundant_paths, distance_to_stations, \
+    Astar, Astar_improved
+from SubwayMap import Path
+from utils import print_list_of_path_with_cost, read_station_information, read_cost_table, \
+    read_information
 
 
 def create_path_with_cost_g(list_nodes, cost_g):
