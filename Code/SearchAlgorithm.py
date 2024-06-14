@@ -1,12 +1,4 @@
-# This file contains all the required routines to make an A* search algorithm.
-#
-__author__ = '1718541'
-
-# _________________________________________________________________________________________
-# Intel.ligencia Artificial
-# Curs 2023 - 2024
-# Universitat Autonoma de Barcelona
-# _______________________________________________________________________________________
+__author__ = ''
 
 from SubwayMap import *
 from utils import *
@@ -144,7 +136,8 @@ def calculate_cost(expand_paths, map, type_preference=0):
             path.update_g(map.connections[path.penultimate][path.last])
         elif type_preference == 2:
             if map.stations[path.last]['line'] == map.stations[path.penultimate]['line']:
-                path.update_g(map.connections[path.penultimate][path.last] * map.velocity[map.stations[path.penultimate]['line']])
+                path.update_g(
+                    map.connections[path.penultimate][path.last] * map.velocity[map.stations[path.penultimate]['line']])
         elif type_preference == 3:
             if map.stations[path.last]['line'] != map.stations[path.penultimate]['line']:
                 path.update_g(1)
@@ -363,50 +356,12 @@ def Astar(origin_id, destination_id, map, type_preference=0):
         for path in expanded_paths:
             path.update_f()
 
-        expanded_paths, list_of_paths, visited_stations_cost = remove_redundant_paths(expanded_paths, list_of_paths, visited_stations_cost)
+        expanded_paths, list_of_paths, visited_stations_cost = remove_redundant_paths(expanded_paths, list_of_paths,
+                                                                                      visited_stations_cost)
 
         list_of_paths = insert_cost_f(expanded_paths, list_of_paths)
 
     return None
-
-
-# def Astar_improved(origin_coord, destination_coord, map):
-#     """
-#     A* Search algorithm
-#
-#     Args:
-#         origin_coord (list): Two REAL values, which refer to the coordinates of the starting position
-#         destination_coord (list): Two REAL values, which refer to the coordinates of the final position
-#         map (object of Map class): All the map information
-#
-#     Returns:
-#         list_of_path[0] (Path Class): The route that goes from origin_coord to destination_coord
-#     """
-#
-#     list_of_paths = []
-#     origin_stations_distances = distance_to_stations(origin_coord, map)
-#     destination_stations_distances = distance_to_stations(destination_coord, map)
-#
-#     for origin_id, origin_distance in origin_stations_distances.items():
-#         for destination_id, destination_distance in destination_stations_distances.items():
-#
-#             walking_time = (origin_distance + destination_distance) / 5
-#             path = Astar(origin_id, destination_id, map, 1)
-#             path.update_g(walking_time)
-#             path.update_f()
-#             path.route.insert(0, 0)  # Add origin coordinate
-#             path.route.append(-1)  # Add destination coordinate
-#             list_of_paths.append(path)
-#
-#     # Calculate walking time from origin to destination separately
-#     walking_distance = euclidean_dist(origin_coord, destination_coord)
-#     walking_path = Path([0, -1])
-#     walking_path.update_g(walking_distance / 5)
-#     walking_path.update_f()
-#     list_of_paths.append(walking_path)
-#
-#     # Sort paths by total cost and return the optimal one
-#     return min(list_of_paths, key=lambda x: x.g)
 
 
 def Astar_improved(origin_coord, destination_coord, map):
@@ -426,103 +381,26 @@ def Astar_improved(origin_coord, destination_coord, map):
     origin_stations_distances = distance_to_stations(origin_coord, map)
     destination_stations_distances = distance_to_stations(destination_coord, map)
 
-    # Add origin and destination coordinates as new stations to the map
-    origin_id = len(map.stations) + 1  # Assuming new station ID is one more than the last station ID
-    destination_id = origin_id + 1  # Increment by one for destination station
+    for origin_id, origin_distance in origin_stations_distances.items():
+        for destination_id, destination_distance in destination_stations_distances.items():
 
-    map.add_connection({origin_id: origin_stations_distances})
-    map.add_connection({destination_id: destination_stations_distances})
+            walking_time = (origin_distance + destination_distance) / 5
+            path = Astar(origin_id, destination_id, map, 1)
+            path.update_g(walking_time)
+            path.update_f()
+            path.route.insert(0, 0)  # Add origin coordinate
+            path.route.append(-1)  # Add destination coordinate
+            list_of_paths.append(path)
 
-    path = Astar(origin_id, destination_id, map, 1)
-    list_of_paths.append(path)
-
-    # # Calculate walking time from origin to destination separately
-    # walking_distance = euclidean_dist(origin_coord, destination_coord)
-    # walking_path = Path([0, -1])
-    # walking_path.update_g(walking_distance / 5)
-    # walking_path.update_f()
-    # list_of_paths.append(walking_path)
+    # Calculate walking time from origin to destination separately
+    walking_distance = euclidean_dist(origin_coord, destination_coord)
+    walking_path = Path([0, -1])
+    walking_path.update_g(walking_distance / 5)
+    walking_path.update_f()
+    list_of_paths.append(walking_path)
 
     # Sort paths by total cost and return the optimal one
     return min(list_of_paths, key=lambda x: x.g)
-
-    # for origin_id, origin_distance in origin_stations_distances.items():
-    #     for destination_id, destination_distance in destination_stations_distances.items():
-    #         walking_time = (origin_distance + destination_distance) / 5
-    #         path = Astar(origin_id, destination_id, map, 1)
-    #         path.update_g(walking_time)
-    #         path.update_f()
-    #         path.route.insert(0, 0)  # Add origin coordinate
-    #         path.route.append(-1)  # Add destination coordinate
-    #         list_of_paths.append(path)
-    #
-    # # Calculate walking time from origin to destination separately
-    # walking_distance = euclidean_dist(origin_coord, destination_coord)
-    # walking_path = Path([0, -1])
-    # walking_path.update_g(walking_distance / 5)
-    # walking_path.update_f()
-    # list_of_paths.append(walking_path)
-    #
-    # # Sort paths by total cost and return the optimal one
-    # return min(list_of_paths, key=lambda x: x.g)
-
-# def Astar_improved(origin_coord, destination_coord, map):
-#     """
-#     A* Search algorithm
-#
-#     Args:
-#         origin_coord (list): Two REAL values, which refer to the coordinates of the starting position
-#         destination_coord (list): Two REAL values, which refer to the coordinates of the final position
-#         map (object of Map class): All the map information
-#
-#     Returns:
-#         Path Class: The optimal route from origin_coord to destination_coord
-#     """
-#
-#     # Add origin and destination coordinates as new stations to the map
-#     origin_id = len(map.stations) + 1  # Assuming new station ID is one more than the last station ID
-#     destination_id = origin_id + 1  # Increment by one for destination station
-#     map.add_station(origin_id, "Origin", 0, origin_coord[0], origin_coord[1])
-#     map.add_station(destination_id, "Destination", 0, destination_coord[0], destination_coord[1])
-#
-#     # Compute the optimal path from the origin to the destination using A* algorithm
-#     path = Astar(origin_id, destination_id, map, 1)
-#
-#     # Calculate walking distance and time from origin to destination directly
-#     walking_distance_origin = euclidean_dist(origin_coord, destination_coord)
-#     walking_time_origin = walking_distance_origin / 5
-#
-#     # Calculate distance from origin and destination coordinates to all stations in the map
-#     origin_stations_distances = distance_to_stations(origin_coord, map)
-#     destination_stations_distances = distance_to_stations(destination_coord, map)
-#
-#     # Find the nearest origin and destination stations
-#     nearest_origin_id = min(origin_stations_distances, key=origin_stations_distances.get)
-#     nearest_destination_id = min(destination_stations_distances, key=destination_stations_distances.get)
-#
-#     # Calculate walking distance and time from the nearest origin station to the destination directly
-#     walking_distance_station_to_destination = euclidean_dist([map.stations[nearest_origin_id]['x'], map.stations[nearest_origin_id]['y']], destination_coord)
-#     walking_time_station_to_destination = walking_distance_station_to_destination / 5
-#
-#     # Compare walking directly from origin to destination and walking to the nearest station then to destination
-#     if walking_time_origin <= walking_time_station_to_destination:
-#         # Update the path with walking time and destination coordinates
-#         path.update_g(walking_time_origin)
-#         path.update_f()
-#         path.route.insert(0, 0)  # Add origin coordinates
-#         path.route.append(-1)  # Add destination coordinates
-#     else:
-#         # Compute the optimal path from the nearest origin station to the destination using A* algorithm
-#         station_to_destination_path = Astar(nearest_origin_id, destination_id, map, 1)
-#         station_to_destination_path.update_g(walking_time_station_to_destination)
-#         station_to_destination_path.update_f()
-#         station_to_destination_path.route.insert(0, nearest_origin_id)  # Add origin station ID
-#         station_to_destination_path.route.append(destination_id)  # Add destination station ID
-#         path = station_to_destination_path
-#
-#     return path
-
-
 
 
 def test_set_up():
@@ -540,18 +418,22 @@ def test_set_up():
 
 if __name__ == '__main__':
     map = test_set_up()
-    print(map.connections)
     # Example of how to use the functions
+
+    # print(map.connections)
+
     # paths = [Path([13, 12, 8]), Path([13, 12, 11]), Path([13, 12, 13])]
-    #
+    # print_list_of_path(paths)
+
     # for station in map.stations:
     #     print(station, map.stations[station])
+    #     # print(station)
     # print()
     # for connection in map.connections:
     #     print(connection, map.connections[connection])
-    #
-    # print()
+
+    print()
     # print_list_of_path_with_cost(paths)
-    # print()
+    print()
     # print(distance_to_stations([3, 5], map))
-    # print(uniform_cost_search(9, 3, map, 0))
+    print(print_list_of_path_with_cost([uniform_cost_search(9, 3, map, 0)]))

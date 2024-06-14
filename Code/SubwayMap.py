@@ -1,9 +1,3 @@
-# _________________________________________________________________________________________
-# Intel.ligencia Artificial
-# Curs 2023 - 2024
-# Universitat Autonoma de Barcelona
-# _________________________________________________________________________________________
-
 class Map:
     """
     A class for keeping all the data regarding stations and their connections
